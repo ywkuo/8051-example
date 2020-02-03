@@ -1,0 +1,20 @@
+# How to construct a loop with ASM
+
+例如C語言的loop如下
+```
+for (i=0;i<10;i++)
+{
+   x=x+1;
+}
+```
+
+** 怎麼使用組合語言呢? **
+
+
+```
+      MOV R5,#0AH 
+AGAIN: 
+      ...
+      DJNZ R5,AGAIN
+```
+
