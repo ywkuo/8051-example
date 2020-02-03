@@ -1,21 +1,62 @@
-# How to construct a loop with ASM
+How to construct a loop with ASM
 
-例如C語言的loop如下
+1. 例如C語言的loop如下
 
-```
 for (i=0;i<10;i++)
 {
    x=x+1;
 }
-```
 
-** 怎麼使用組合語言呢? **
+怎麼使用組合語言呢? 注意:只有 ... 這裡會重複10次
 
 
-```
       MOV R5,#0AH 
 AGAIN: 
       ...
       DJNZ R5,AGAIN
-```
+
+2. Nested loop: 需要用兩個register，注意: 23/24是內迴圈，重複0A次，21到25行，外迴圈，會重複05次，所以23/24總共重複了50次。
+
+      MOV R5,#005H 
+AGAIN: 
+      MOV R6,#0AH 
+AGAIN2: 
+      DJNZ R6,AGAIN2
+      DJNZ R5,AGAIN
+
+3. Subroutine
+可以修改為副程式
+
+
+Delay:
+      MOV R5,#0FFH 
+AGAIN: 
+      MOV R6,#0FFH 
+AGAIN2: 
+      DJNZ R6,AGAIN2
+      DJNZ R5,AGAIN
+RET
+
+於主程式中，使用LCALL Delay就可以了
+
+4. 可變長度
+Delay:
+      
+AGAIN: 
+      MOV R6,#0FFH 
+AGAIN2: 
+      DJNZ R6,AGAIN2
+      DJNZ R5,AGAIN
+RET
+
+故意把MOV R5,#0FFH 去掉
+呼叫的時候如下: 
+
+MOV R5,#03H 
+LCALL Delay
+
+這樣外迴圈只會有三次了。
+
+
+5. 總結: 寫程式不是一行一行，而是一個block一個block來思考，例如第四點，了解副程式的意義後，使用的時候要把55/56行一起視為一體來使用。
 
